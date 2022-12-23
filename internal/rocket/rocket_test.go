@@ -19,7 +19,7 @@ func TestRocketService(t *testing.T) {
 		// signifes that when GetRocketByID is called with "UUID-1",
 		// it should return NO ERROR and UUID-1
 		rocketStoreMock.
-			EXPECT().GetRocketByID(id).Return(&Rocket{
+			EXPECT().GetRocketByID(id).Return(Rocket{
 			ID: id,
 		}, nil)
 
@@ -47,14 +47,42 @@ func TestRocketService(t *testing.T) {
 		rocketStoreMock.
 			EXPECT().
 			InsertRocket(newRocket).
-			Return(&newRocket, nil)
+			Return(newRocket, nil)
 
 		rocketService := New(rocketStoreMock)
 		rkt, err := rocketService.InsertRocket(context.Background(), newRocket)
 
 		assert.NoError(t, err)
 		assert.Equal(t, newRocket.ID, rkt.ID, "inserted rocket doesn't match payload rocket")
-		assert.Equal(t, newRocket, *rkt) // deference pointer for comparison
+		assert.Equal(t, newRocket, rkt) // deference pointer for comparison
+	})
+
+	t.Run("list all rockets", func(t *testing.T) {
+		rocketStoreMock := NewMockStore(mockCtrl)
+
+		rockets := []Rocket{
+			{
+				ID:   "1",
+				Name: "Falcon1",
+			},
+			{
+				ID:   "2",
+				Name: "Falcon2",
+			},
+			{
+				ID:   "3",
+				Name: "Falcon3",
+			},
+		}
+
+		rocketStoreMock.EXPECT().GetRockets().Return(rockets, nil)
+
+		rocketService := New(rocketStoreMock)
+
+		rkts, err := rocketService.GetRockets(context.Background())
+
+		assert.NoError(t, err)
+		assert.Equal(t, len(rockets), len(rkts))
 	})
 
 	t.Run("delete an existing rocket", func(t *testing.T) {
@@ -70,6 +98,5 @@ func TestRocketService(t *testing.T) {
 		err := rocketService.DeleteRocket(context.Background(), id)
 
 		assert.NoError(t, err)
-
 	})
 }

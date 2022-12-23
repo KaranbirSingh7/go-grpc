@@ -14,9 +14,10 @@ type Rocket struct {
 // Store - defines the interface we expect
 // our database implementation to follow
 type Store interface {
-	GetRocketByID(id string) (*Rocket, error)
-	InsertRocket(rkt Rocket) (*Rocket, error)
+	GetRocketByID(id string) (Rocket, error)
+	InsertRocket(rkt Rocket) (Rocket, error)
 	DeleteRocket(id string) error
+	GetRockets() ([]Rocket, error)
 }
 
 // Service - our rocket service responsible for updating rocket inventory
@@ -33,20 +34,30 @@ func New(store Store) *Service {
 	}
 }
 
+// GetRockets - get/list all rockets
+func (s *Service) GetRockets(ctx context.Context) ([]Rocket, error) {
+	rkts, err := s.Store.GetRockets()
+	if err != nil {
+		return []Rocket{}, err
+	}
+	return rkts, nil
+
+}
+
 // GetRocketByID - retreive a rocket based on ID provided from store
-func (s *Service) GetRocketByID(ctx context.Context, id string) (*Rocket, error) {
+func (s *Service) GetRocketByID(ctx context.Context, id string) (Rocket, error) {
 	rkt, err := s.Store.GetRocketByID(id)
 	if err != nil {
-		return &Rocket{}, err
+		return Rocket{}, err
 	}
 	return rkt, nil
 }
 
 // InsertRocket - responsible for inserting rocket into database
-func (s *Service) InsertRocket(ctx context.Context, rkt Rocket) (*Rocket, error) {
+func (s *Service) InsertRocket(ctx context.Context, rkt Rocket) (Rocket, error) {
 	r, err := s.Store.InsertRocket(rkt)
 	if err != nil {
-		return &Rocket{}, err
+		return Rocket{}, err
 
 	}
 	return r, nil
