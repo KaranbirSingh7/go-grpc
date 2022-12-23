@@ -20,6 +20,7 @@ type Store interface {
 }
 
 // Service - our rocket service responsible for updating rocket inventory
+// Service - wraps our interface
 type Service struct {
 	Store Store
 }
