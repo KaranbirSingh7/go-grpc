@@ -10,6 +10,11 @@ GIT_HASH ?= $(shell git log --format="%h" -n 1)
 fmt:
 	@gofmt -l -w -s .
 
+.PHONY: build
+build:
+	rm -rf bin/ && go build -o bin/app cmd/server/main.go
+	echo "binary -> bin/app"
+
 .PHONY: run
 run:
 	go run cmd/server/main.go

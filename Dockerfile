@@ -11,6 +11,7 @@ COPY --from=builder /app/app /app
 EXPOSE 8080
 
 # because security
-USER nonroot:nonroot
+# sqlite require root user to mount / as readwrite fs
+# USER nonroot:nonroot
 
 ENTRYPOINT ["/app"]
