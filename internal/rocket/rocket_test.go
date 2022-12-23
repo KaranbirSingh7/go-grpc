@@ -53,7 +53,23 @@ func TestRocketService(t *testing.T) {
 		rkt, err := rocketService.InsertRocket(context.Background(), newRocket)
 
 		assert.NoError(t, err)
+		assert.Equal(t, newRocket.ID, rkt.ID, "inserted rocket doesn't match payload rocket")
 		assert.Equal(t, newRocket, *rkt) // deference pointer for comparison
-		// assert.Equal(t, newRocket,, rkt, "inserted rocket doesn't match payload rocket")
+	})
+
+	t.Run("delete an existing rocket", func(t *testing.T) {
+		rocketStoreMock := NewMockStore(mockCtrl)
+
+		id := "UUID-1"
+
+		//mock: delete rocket and return no error
+		rocketStoreMock.EXPECT().DeleteRocket(id).Return(nil)
+
+		// DB call here
+		rocketService := New(rocketStoreMock)
+		err := rocketService.DeleteRocket(context.Background(), id)
+
+		assert.NoError(t, err)
+
 	})
 }
