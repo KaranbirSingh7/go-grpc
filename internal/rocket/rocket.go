@@ -1,11 +1,16 @@
 //go:generate mockgen -destination=rocket_mocks_test.go -package=rocket github.com/karanbirsingh7/go-grpc/internal/rocket Store
 package rocket
 
-import "context"
+import (
+	"context"
+
+	"gorm.io/gorm"
+)
 
 // Rocket - contains definitions of a rocket
 type Rocket struct {
-	ID      string
+	gorm.Model
+	ID      string `gorm:"primaryKey"`
 	Name    string
 	Type    string
 	Flights int
