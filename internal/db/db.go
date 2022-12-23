@@ -12,7 +12,7 @@ type Store struct {
 
 // New - returns a new store or error
 func New() (Store, error) {
-	db, err := gorm.Open(sqlite.Open("__deleteme.db"))
+	db, err := gorm.Open(sqlite.Open("__deleteme.db"), &gorm.Config{})
 
 	// db, err := sqlx.Connect("sqlite3", "__deleteme.db")
 	if err != nil {
